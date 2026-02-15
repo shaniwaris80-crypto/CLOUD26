@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>CloudTrack — B/W PRO</title>
+  <title>CloudTrack PRO — B/W</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -11,12 +11,13 @@
     <div class="brand">
       <div class="logo">CT</div>
       <div>
-        <div class="title">CloudTrack</div>
-        <div class="sub">Tesorería + Conciliación — 100% Cloud</div>
+        <div class="title">CloudTrack PRO</div>
+        <div class="sub">Tesorería + Caja + Conciliación — 100% Cloud</div>
       </div>
     </div>
 
     <div class="top-actions">
+      <div id="roleBadge" class="pill hidden"></div>
       <div id="userBadge" class="badge hidden"></div>
       <button id="btnLogout" class="btn hidden">Salir</button>
     </div>
@@ -26,7 +27,7 @@
     <!-- AUTH -->
     <section id="authView" class="card">
       <h2>Acceso</h2>
-      <p class="muted">Inicia sesión o crea tu cuenta (email + contraseña).</p>
+      <p class="muted">Inicia sesión o crea cuenta (email + contraseña).</p>
 
       <div class="grid2">
         <div>
@@ -49,48 +50,93 @@
 
     <!-- APP -->
     <section id="appView" class="hidden">
+
+      <div class="bar">
+        <div class="row">
+          <div class="pill">ORG: <b id="orgName">—</b></div>
+          <div class="pill">Tienda:
+            <select id="storeFilter" class="inline"></select>
+          </div>
+        </div>
+
+        <div class="row">
+          <button id="btnOpenOrg" class="btn">Cambiar/Crear ORG</button>
+          <button id="btnOpenMembers" class="btn">Miembros</button>
+        </div>
+      </div>
+
       <nav class="tabs">
         <button class="tab active" data-tab="dashboard">Dashboard</button>
-        <button class="tab" data-tab="cuentas">Cuentas</button>
+        <button class="tab" data-tab="stores">Tiendas</button>
+        <button class="tab" data-tab="accounts">Cuentas</button>
         <button class="tab" data-tab="movs">Movimientos</button>
-        <button class="tab" data-tab="reglas">Reglas</button>
-        <button class="tab" data-tab="facturas">Facturas</button>
-        <button class="tab" data-tab="conciliacion">Conciliación</button>
-        <button class="tab" data-tab="ajustes">Ajustes</button>
+        <button class="tab" data-tab="rules">Reglas</button>
+        <button class="tab" data-tab="invoices">Facturas</button>
+        <button class="tab" data-tab="cash">Caja</button>
+        <button class="tab" data-tab="reco">Conciliación</button>
+        <button class="tab" data-tab="settings">Ajustes</button>
       </nav>
 
       <!-- DASHBOARD -->
       <section class="panel card" id="tab-dashboard">
         <div class="panel-head">
           <h2>Dashboard</h2>
-          <div class="pill">Org: <span id="orgName">—</span></div>
+          <div class="pill">Vista por tienda + banco + caja</div>
         </div>
 
         <div class="kpis">
           <div class="kpi">
-            <div class="kpi-label">Saldo total</div>
-            <div id="kpiSaldoTotal" class="kpi-value">0,00 €</div>
+            <div class="kpi-label">Saldo bancos (estimado)</div>
+            <div id="kpiBank" class="kpi-value">0,00 €</div>
           </div>
           <div class="kpi">
-            <div class="kpi-label">Movimientos (últimos 30 días)</div>
-            <div id="kpiMov30" class="kpi-value">0</div>
+            <div class="kpi-label">Caja hoy (efectivo + tarjeta)</div>
+            <div id="kpiCashToday" class="kpi-value">0,00 €</div>
           </div>
           <div class="kpi">
-            <div class="kpi-label">Pendientes de conciliar</div>
-            <div id="kpiPendientes" class="kpi-value">0</div>
+            <div class="kpi-label">Pendientes conciliar</div>
+            <div id="kpiPending" class="kpi-value">0</div>
           </div>
         </div>
 
         <div class="hr"></div>
-
         <h3>Saldos por cuenta</h3>
         <div id="dashAccounts" class="list"></div>
+
+        <div class="hr"></div>
+        <h3>Últimos cierres de caja</h3>
+        <div id="dashCash" class="list"></div>
       </section>
 
-      <!-- CUENTAS -->
-      <section class="panel card hidden" id="tab-cuentas">
+      <!-- STORES -->
+      <section class="panel card hidden" id="tab-stores">
         <div class="panel-head">
-          <h2>Cuentas</h2>
+          <h2>Tiendas</h2>
+        </div>
+
+        <div class="grid3">
+          <div>
+            <label>Nombre tienda</label>
+            <input id="storeName" placeholder="San Pablo"/>
+          </div>
+          <div>
+            <label>Alias (opcional)</label>
+            <input id="storeAlias" placeholder="SP"/>
+          </div>
+          <div class="row">
+            <button id="btnAddStore" class="btn primary">Añadir tienda</button>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <h3>Listado</h3>
+        <div id="storesList" class="list"></div>
+      </section>
+
+      <!-- ACCOUNTS -->
+      <section class="panel card hidden" id="tab-accounts">
+        <div class="panel-head">
+          <h2>Cuentas bancarias</h2>
         </div>
 
         <div class="grid3">
@@ -117,41 +163,45 @@
         <div id="accountsList" class="list"></div>
       </section>
 
-      <!-- MOVIMIENTOS -->
+      <!-- MOVS -->
       <section class="panel card hidden" id="tab-movs">
         <div class="panel-head">
           <h2>Movimientos</h2>
           <div class="row">
+            <select id="movTypeFilter">
+              <option value="">Todos</option>
+              <option value="bank">Banco</option>
+              <option value="cash">Caja</option>
+            </select>
             <select id="movAccountFilter"></select>
             <input id="movSearch" placeholder="Buscar (texto, contraparte, categoría)"/>
           </div>
         </div>
 
         <div class="card soft">
-          <h3>Importar CSV</h3>
+          <h3>Importar CSV (Banco)</h3>
           <p class="muted">
-            CSV con columnas típicas: <b>date</b>, <b>amount</b>, <b>description</b>.  
-            También acepta: fecha/importe/concepto (se auto-detecta).
+            Columnas aceptadas (se auto-detecta): <b>fecha/date</b>, <b>importe/amount</b>, <b>concepto/description</b>.
+            Delimitador <b>,</b> o <b>;</b>.
           </p>
           <div class="row">
             <input id="csvFile" type="file" accept=".csv,text/csv"/>
             <button id="btnImportCsv" class="btn primary">Importar</button>
+            <button id="btnApplyRules" class="btn">Aplicar reglas</button>
           </div>
           <div id="csvMsg" class="msg"></div>
         </div>
 
         <div class="hr"></div>
-
         <div class="row space">
-          <div class="pill">Total filtrado: <span id="movCount">0</span></div>
-          <button id="btnAutoRules" class="btn">Aplicar reglas a filtrados</button>
+          <div class="pill">Filtrados: <span id="movCount">0</span></div>
         </div>
 
         <div id="movsList" class="list"></div>
       </section>
 
-      <!-- REGLAS -->
-      <section class="panel card hidden" id="tab-reglas">
+      <!-- RULES -->
+      <section class="panel card hidden" id="tab-rules">
         <div class="panel-head">
           <h2>Reglas</h2>
           <div class="pill">Auto-categorización</div>
@@ -172,7 +222,7 @@
           </div>
         </div>
 
-        <div class="grid2">
+        <div class="grid3">
           <div>
             <label>Tipo</label>
             <select id="ruleType">
@@ -185,6 +235,10 @@
             <label>Prioridad (más alto gana)</label>
             <input id="rulePrio" type="number" value="10"/>
           </div>
+          <div>
+            <label>Aplicar a tienda</label>
+            <select id="ruleStore"></select>
+          </div>
         </div>
 
         <div class="row">
@@ -196,8 +250,8 @@
         <div id="rulesList" class="list"></div>
       </section>
 
-      <!-- FACTURAS -->
-      <section class="panel card hidden" id="tab-facturas">
+      <!-- INVOICES -->
+      <section class="panel card hidden" id="tab-invoices">
         <div class="panel-head">
           <h2>Facturas</h2>
         </div>
@@ -247,78 +301,113 @@
         <div id="invoicesList" class="list"></div>
       </section>
 
-      <!-- CONCILIACION -->
-      <section class="panel card hidden" id="tab-conciliacion">
+      <!-- CASH -->
+      <section class="panel card hidden" id="tab-cash">
         <div class="panel-head">
-          <h2>Conciliación</h2>
-          <div class="pill">Movimiento ↔ Factura</div>
+          <h2>Caja diaria</h2>
+          <div class="pill">Cierres por tienda</div>
+        </div>
+
+        <div class="grid3">
+          <div>
+            <label>Fecha</label>
+            <input id="cashDate" type="date"/>
+          </div>
+          <div>
+            <label>Efectivo</label>
+            <input id="cashCash" type="number" step="0.01" placeholder="0.00"/>
+          </div>
+          <div>
+            <label>Tarjeta</label>
+            <input id="cashCard" type="number" step="0.01" placeholder="0.00"/>
+          </div>
+        </div>
+
+        <div class="grid3">
+          <div>
+            <label>Gastos caja</label>
+            <input id="cashExp" type="number" step="0.01" placeholder="0.00"/>
+          </div>
+          <div>
+            <label>Notas</label>
+            <input id="cashNotes" placeholder="Observaciones..."/>
+          </div>
+          <div class="row">
+            <button id="btnSaveCash" class="btn primary">Guardar cierre</button>
+          </div>
+        </div>
+
+        <div id="cashMsg" class="msg"></div>
+
+        <div class="hr"></div>
+        <h3>Historial cierres</h3>
+        <div id="cashList" class="list"></div>
+      </section>
+
+      <!-- RECO -->
+      <section class="panel card hidden" id="tab-reco">
+        <div class="panel-head">
+          <h2>Conciliación PRO</h2>
+          <div class="pill">Pagos agrupados y parciales</div>
+        </div>
+
+        <div class="card soft">
+          <h3>Crear grupo de conciliación</h3>
+          <p class="muted">Selecciona movimientos y facturas y crea un grupo (la app calcula total y diferencia).</p>
+          <div class="row">
+            <button id="btnCreateGroup" class="btn primary">Crear grupo</button>
+            <button id="btnClearSel" class="btn">Limpiar selección</button>
+            <div class="pill">Movs: <b id="selMovsCount">0</b></div>
+            <div class="pill">Facs: <b id="selInvsCount">0</b></div>
+          </div>
+          <div id="recoMsg" class="msg"></div>
         </div>
 
         <div class="grid2">
           <div class="card soft">
-            <h3>Movimientos sin conciliar</h3>
-            <div id="unmatchedMovs" class="list"></div>
+            <h3>Movimientos (sin conciliar)</h3>
+            <div id="recoMovs" class="list"></div>
           </div>
           <div class="card soft">
-            <h3>Facturas pendientes</h3>
-            <div id="pendingInvoices" class="list"></div>
+            <h3>Facturas (pendientes)</h3>
+            <div id="recoInvs" class="list"></div>
           </div>
         </div>
 
         <div class="hr"></div>
-
-        <div class="card soft">
-          <h3>Emparejar</h3>
-          <p class="muted">Selecciona 1 movimiento y 1 factura, y pulsa “Conciliar”.</p>
-          <div class="row">
-            <div class="pill">Movimiento: <span id="selMov">—</span></div>
-            <div class="pill">Factura: <span id="selInv">—</span></div>
-            <button id="btnMatch" class="btn primary">Conciliar</button>
-            <button id="btnUnmatch" class="btn">Deshacer</button>
-          </div>
-          <div id="matchMsg" class="msg"></div>
-        </div>
-
-        <div class="hr"></div>
-        <h3>Conciliaciones</h3>
-        <div id="matchesList" class="list"></div>
+        <h3>Grupos de conciliación</h3>
+        <div id="groupsList" class="list"></div>
       </section>
 
-      <!-- AJUSTES -->
-      <section class="panel card hidden" id="tab-ajustes">
+      <!-- SETTINGS -->
+      <section class="panel card hidden" id="tab-settings">
         <div class="panel-head">
           <h2>Ajustes</h2>
         </div>
 
         <div class="card soft">
-          <h3>Empresa / Organización</h3>
-          <div class="grid2">
-            <div>
-              <label>Nombre de la org</label>
-              <input id="orgNameInput" placeholder="Mi Empresa"/>
-            </div>
-            <div class="row">
-              <button id="btnSaveOrg" class="btn primary">Guardar</button>
-            </div>
-          </div>
-          <div id="orgMsg" class="msg"></div>
-        </div>
-
-        <div class="card soft">
-          <h3>Formato CSV esperado</h3>
-          <p class="muted">
-            Acepta cabeceras equivalentes:
-            <b>date/fecha</b> · <b>amount/importe</b> · <b>description/concepto</b>.
-          </p>
+          <h3>Formato</h3>
+          <p class="muted">CSV: fecha/importe/concepto. Conciliación: soporta pagos parciales y agrupados.</p>
         </div>
       </section>
+
+      <!-- MODALS -->
+      <div id="modal" class="modal hidden">
+        <div class="modal-card">
+          <div class="modal-head">
+            <div class="h" id="modalTitle">—</div>
+            <button class="btn" id="btnCloseModal">Cerrar</button>
+          </div>
+          <div id="modalBody"></div>
+        </div>
+      </div>
 
     </section>
   </main>
 
   <footer class="footer">
-    <span>CloudTrack — B/W PRO</span>
-    <span class="muted">100% Cloud · Firebase</span>
+    <span>CloudTrack PRO — B/W</span>
+    <span class="muted">Firebase Auth · Firestore · Storage</span>
   </footer>
 
   <script type="module" src="app.js"></script>
