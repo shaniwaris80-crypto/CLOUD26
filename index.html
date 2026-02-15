@@ -3,413 +3,672 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>CloudTrack PRO — B/W</title>
+  <title>CloudTrack PRO — White Fintech</title>
   <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">CT</div>
-      <div>
-        <div class="title">CloudTrack PRO</div>
-        <div class="sub">Tesorería + Caja + Conciliación — 100% Cloud</div>
-      </div>
-    </div>
+  <div class="app">
 
-    <div class="top-actions">
-      <div id="roleBadge" class="pill hidden"></div>
-      <div id="userBadge" class="badge hidden"></div>
-      <button id="btnLogout" class="btn hidden">Salir</button>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <!-- AUTH -->
-    <section id="authView" class="card">
-      <h2>Acceso</h2>
-      <p class="muted">Inicia sesión o crea cuenta (email + contraseña).</p>
-
-      <div class="grid2">
-        <div>
-          <label>Email</label>
-          <input id="authEmail" type="email" placeholder="tu@email.com"/>
-        </div>
-        <div>
-          <label>Contraseña</label>
-          <input id="authPass" type="password" placeholder="••••••••"/>
-        </div>
-      </div>
-
-      <div class="row">
-        <button id="btnLogin" class="btn primary">Entrar</button>
-        <button id="btnRegister" class="btn">Crear cuenta</button>
-      </div>
-
-      <div id="authMsg" class="msg"></div>
-    </section>
-
-    <!-- APP -->
-    <section id="appView" class="hidden">
-
-      <div class="bar">
-        <div class="row">
-          <div class="pill">ORG: <b id="orgName">—</b></div>
-          <div class="pill">Tienda:
-            <select id="storeFilter" class="inline"></select>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-top">
+        <div class="brand">
+          <div class="mark">CT</div>
+          <div class="btxt">
+            <div class="btitle">CloudTrack</div>
+            <div class="bsub">PRO · White Fintech</div>
           </div>
         </div>
 
-        <div class="row">
-          <button id="btnOpenOrg" class="btn">Cambiar/Crear ORG</button>
-          <button id="btnOpenMembers" class="btn">Miembros</button>
+        <div class="sb-user">
+          <div class="avatar" id="avatar">A</div>
+          <div class="uinfo">
+            <div class="uname" id="userEmail">—</div>
+            <div class="urole" id="roleBadge">—</div>
+          </div>
+        </div>
+
+        <div class="sb-actions">
+          <button class="btn ghost" id="btnTheme">🌙 / ☀️</button>
+          <button class="btn ghost" id="btnOrg">ORG</button>
+          <button class="btn ghost" id="btnMembers">Miembros</button>
+          <button class="btn danger" id="btnLogout">Salir</button>
         </div>
       </div>
 
-      <nav class="tabs">
-        <button class="tab active" data-tab="dashboard">Dashboard</button>
-        <button class="tab" data-tab="stores">Tiendas</button>
-        <button class="tab" data-tab="accounts">Cuentas</button>
-        <button class="tab" data-tab="movs">Movimientos</button>
-        <button class="tab" data-tab="rules">Reglas</button>
-        <button class="tab" data-tab="invoices">Facturas</button>
-        <button class="tab" data-tab="cash">Caja</button>
-        <button class="tab" data-tab="reco">Conciliación</button>
-        <button class="tab" data-tab="settings">Ajustes</button>
+      <nav class="nav">
+        <button class="navitem active" data-tab="dashboard">Dashboard</button>
+        <button class="navitem" data-tab="movs">Movimientos</button>
+        <button class="navitem" data-tab="invoices">Facturas</button>
+        <button class="navitem" data-tab="cash">Caja</button>
+        <button class="navitem" data-tab="reco">Conciliación</button>
+        <button class="navitem" data-tab="accounts">Cuentas</button>
+        <button class="navitem" data-tab="stores">Tiendas</button>
+        <button class="navitem" data-tab="rules">Reglas</button>
+        <button class="navitem" data-tab="exports">Exportar</button>
+        <button class="navitem" data-tab="audit">Auditoría</button>
+        <button class="navitem" data-tab="settings">Ajustes</button>
       </nav>
 
-      <!-- DASHBOARD -->
-      <section class="panel card" id="tab-dashboard">
-        <div class="panel-head">
-          <h2>Dashboard</h2>
-          <div class="pill">Vista por tienda + banco + caja</div>
+      <div class="sb-foot">
+        <div class="mini">
+          <div class="label">ORG</div>
+          <div class="value" id="orgName">—</div>
         </div>
-
-        <div class="kpis">
-          <div class="kpi">
-            <div class="kpi-label">Saldo bancos (estimado)</div>
-            <div id="kpiBank" class="kpi-value">0,00 €</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Caja hoy (efectivo + tarjeta)</div>
-            <div id="kpiCashToday" class="kpi-value">0,00 €</div>
-          </div>
-          <div class="kpi">
-            <div class="kpi-label">Pendientes conciliar</div>
-            <div id="kpiPending" class="kpi-value">0</div>
+        <div class="mini">
+          <div class="label">Tienda</div>
+          <select id="storeFilter" class="select"></select>
+        </div>
+        <div class="mini">
+          <div class="label">Rango</div>
+          <div class="range">
+            <input id="dateFrom" type="date" class="input"/>
+            <input id="dateTo" type="date" class="input"/>
           </div>
         </div>
+      </div>
+    </aside>
 
-        <div class="hr"></div>
-        <h3>Saldos por cuenta</h3>
-        <div id="dashAccounts" class="list"></div>
-
-        <div class="hr"></div>
-        <h3>Últimos cierres de caja</h3>
-        <div id="dashCash" class="list"></div>
-      </section>
-
-      <!-- STORES -->
-      <section class="panel card hidden" id="tab-stores">
-        <div class="panel-head">
-          <h2>Tiendas</h2>
-        </div>
-
-        <div class="grid3">
-          <div>
-            <label>Nombre tienda</label>
-            <input id="storeName" placeholder="San Pablo"/>
-          </div>
-          <div>
-            <label>Alias (opcional)</label>
-            <input id="storeAlias" placeholder="SP"/>
-          </div>
-          <div class="row">
-            <button id="btnAddStore" class="btn primary">Añadir tienda</button>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-        <h3>Listado</h3>
-        <div id="storesList" class="list"></div>
-      </section>
-
-      <!-- ACCOUNTS -->
-      <section class="panel card hidden" id="tab-accounts">
-        <div class="panel-head">
-          <h2>Cuentas bancarias</h2>
-        </div>
-
-        <div class="grid3">
-          <div>
-            <label>Nombre</label>
-            <input id="accName" placeholder="CaixaBank Principal"/>
-          </div>
-          <div>
-            <label>Moneda</label>
-            <input id="accCcy" value="EUR"/>
-          </div>
-          <div>
-            <label>Saldo inicial</label>
-            <input id="accOpening" type="number" step="0.01" placeholder="0.00"/>
-          </div>
-        </div>
-
-        <div class="row">
-          <button id="btnAddAccount" class="btn primary">Añadir cuenta</button>
-        </div>
-
-        <div class="hr"></div>
-        <h3>Listado</h3>
-        <div id="accountsList" class="list"></div>
-      </section>
-
-      <!-- MOVS -->
-      <section class="panel card hidden" id="tab-movs">
-        <div class="panel-head">
-          <h2>Movimientos</h2>
-          <div class="row">
-            <select id="movTypeFilter">
-              <option value="">Todos</option>
+    <!-- MAIN -->
+    <main class="main">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="search">
+          <input id="globalSearch" class="input" placeholder="Buscar… (concepto, contraparte, categoría, nº factura)"/>
+          <div class="chips">
+            <select id="typeFilter" class="select">
+              <option value="">Tipo: Todos</option>
               <option value="bank">Banco</option>
               <option value="cash">Caja</option>
             </select>
-            <select id="movAccountFilter"></select>
-            <input id="movSearch" placeholder="Buscar (texto, contraparte, categoría)"/>
-          </div>
-        </div>
-
-        <div class="card soft">
-          <h3>Importar CSV (Banco)</h3>
-          <p class="muted">
-            Columnas aceptadas (se auto-detecta): <b>fecha/date</b>, <b>importe/amount</b>, <b>concepto/description</b>.
-            Delimitador <b>,</b> o <b>;</b>.
-          </p>
-          <div class="row">
-            <input id="csvFile" type="file" accept=".csv,text/csv"/>
-            <button id="btnImportCsv" class="btn primary">Importar</button>
-            <button id="btnApplyRules" class="btn">Aplicar reglas</button>
-          </div>
-          <div id="csvMsg" class="msg"></div>
-        </div>
-
-        <div class="hr"></div>
-        <div class="row space">
-          <div class="pill">Filtrados: <span id="movCount">0</span></div>
-        </div>
-
-        <div id="movsList" class="list"></div>
-      </section>
-
-      <!-- RULES -->
-      <section class="panel card hidden" id="tab-rules">
-        <div class="panel-head">
-          <h2>Reglas</h2>
-          <div class="pill">Auto-categorización</div>
-        </div>
-
-        <div class="grid3">
-          <div>
-            <label>Si el texto contiene</label>
-            <input id="ruleNeedle" placeholder="MONTENEGRO"/>
-          </div>
-          <div>
-            <label>Categoría</label>
-            <input id="ruleCat" placeholder="Compras · Proveedor"/>
-          </div>
-          <div>
-            <label>Contraparte (opcional)</label>
-            <input id="ruleParty" placeholder="Montenegro"/>
-          </div>
-        </div>
-
-        <div class="grid3">
-          <div>
-            <label>Tipo</label>
-            <select id="ruleType">
-              <option value="any">Cualquiera</option>
-              <option value="in">Solo ingresos</option>
-              <option value="out">Solo gastos</option>
-            </select>
-          </div>
-          <div>
-            <label>Prioridad (más alto gana)</label>
-            <input id="rulePrio" type="number" value="10"/>
-          </div>
-          <div>
-            <label>Aplicar a tienda</label>
-            <select id="ruleStore"></select>
-          </div>
-        </div>
-
-        <div class="row">
-          <button id="btnAddRule" class="btn primary">Guardar regla</button>
-        </div>
-
-        <div class="hr"></div>
-        <h3>Reglas existentes</h3>
-        <div id="rulesList" class="list"></div>
-      </section>
-
-      <!-- INVOICES -->
-      <section class="panel card hidden" id="tab-invoices">
-        <div class="panel-head">
-          <h2>Facturas</h2>
-        </div>
-
-        <div class="grid3">
-          <div>
-            <label>Proveedor/Cliente</label>
-            <input id="invParty" placeholder="ESMO / Cliente X"/>
-          </div>
-          <div>
-            <label>Nº Factura</label>
-            <input id="invNumber" placeholder="F-2026-001"/>
-          </div>
-          <div>
-            <label>Total</label>
-            <input id="invTotal" type="number" step="0.01" placeholder="0.00"/>
-          </div>
-        </div>
-
-        <div class="grid3">
-          <div>
-            <label>Fecha</label>
-            <input id="invDate" type="date"/>
-          </div>
-          <div>
-            <label>Vencimiento</label>
-            <input id="invDue" type="date"/>
-          </div>
-          <div>
-            <label>Estado</label>
-            <select id="invStatus">
-              <option value="pending">Pendiente</option>
-              <option value="paid">Pagada</option>
-              <option value="canceled">Anulada</option>
+            <select id="accountFilter" class="select"></select>
+            <select id="statusFilter" class="select">
+              <option value="">Estado: Todos</option>
+              <option value="open">No conciliado</option>
+              <option value="reconciled">Conciliado</option>
             </select>
           </div>
         </div>
 
-        <div class="row">
-          <input id="invPdf" type="file" accept="application/pdf"/>
-          <button id="btnAddInvoice" class="btn primary">Subir factura</button>
+        <div class="quick">
+          <button class="btn" id="btnQuickImport">Import CSV</button>
+          <button class="btn" id="btnQuickInvoice">+ Factura</button>
+          <button class="btn" id="btnQuickCash">+ Cierre Caja</button>
         </div>
-        <div id="invMsg" class="msg"></div>
+      </header>
 
-        <div class="hr"></div>
-        <h3>Listado</h3>
-        <div id="invoicesList" class="list"></div>
-      </section>
+      <!-- AUTH VIEW -->
+      <section class="auth" id="authView">
+        <div class="card authcard">
+          <h1>Acceso</h1>
+          <p class="muted">100% Cloud · Firebase Auth · Multiusuario por ORG</p>
 
-      <!-- CASH -->
-      <section class="panel card hidden" id="tab-cash">
-        <div class="panel-head">
-          <h2>Caja diaria</h2>
-          <div class="pill">Cierres por tienda</div>
-        </div>
+          <div class="grid2">
+            <div>
+              <label>Email</label>
+              <input id="authEmail" type="email" class="input" placeholder="tu@email.com"/>
+            </div>
+            <div>
+              <label>Contraseña</label>
+              <input id="authPass" type="password" class="input" placeholder="••••••••"/>
+            </div>
+          </div>
 
-        <div class="grid3">
-          <div>
-            <label>Fecha</label>
-            <input id="cashDate" type="date"/>
-          </div>
-          <div>
-            <label>Efectivo</label>
-            <input id="cashCash" type="number" step="0.01" placeholder="0.00"/>
-          </div>
-          <div>
-            <label>Tarjeta</label>
-            <input id="cashCard" type="number" step="0.01" placeholder="0.00"/>
-          </div>
-        </div>
-
-        <div class="grid3">
-          <div>
-            <label>Gastos caja</label>
-            <input id="cashExp" type="number" step="0.01" placeholder="0.00"/>
-          </div>
-          <div>
-            <label>Notas</label>
-            <input id="cashNotes" placeholder="Observaciones..."/>
-          </div>
           <div class="row">
-            <button id="btnSaveCash" class="btn primary">Guardar cierre</button>
+            <button class="btn primary" id="btnLogin">Entrar</button>
+            <button class="btn" id="btnRegister">Crear cuenta</button>
           </div>
-        </div>
 
-        <div id="cashMsg" class="msg"></div>
+          <div class="hr"></div>
 
-        <div class="hr"></div>
-        <h3>Historial cierres</h3>
-        <div id="cashList" class="list"></div>
-      </section>
-
-      <!-- RECO -->
-      <section class="panel card hidden" id="tab-reco">
-        <div class="panel-head">
-          <h2>Conciliación PRO</h2>
-          <div class="pill">Pagos agrupados y parciales</div>
-        </div>
-
-        <div class="card soft">
-          <h3>Crear grupo de conciliación</h3>
-          <p class="muted">Selecciona movimientos y facturas y crea un grupo (la app calcula total y diferencia).</p>
+          <h3>Entrar con invitación</h3>
+          <p class="muted">Si te dieron un token de invitación, pégalo aquí.</p>
           <div class="row">
-            <button id="btnCreateGroup" class="btn primary">Crear grupo</button>
-            <button id="btnClearSel" class="btn">Limpiar selección</button>
-            <div class="pill">Movs: <b id="selMovsCount">0</b></div>
-            <div class="pill">Facs: <b id="selInvsCount">0</b></div>
+            <input id="inviteToken" class="input" placeholder="INV-XXXX..."/>
+            <button class="btn" id="btnAcceptInvite">Aceptar invitación</button>
           </div>
-          <div id="recoMsg" class="msg"></div>
-        </div>
 
-        <div class="grid2">
-          <div class="card soft">
-            <h3>Movimientos (sin conciliar)</h3>
-            <div id="recoMovs" class="list"></div>
-          </div>
-          <div class="card soft">
-            <h3>Facturas (pendientes)</h3>
-            <div id="recoInvs" class="list"></div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-        <h3>Grupos de conciliación</h3>
-        <div id="groupsList" class="list"></div>
-      </section>
-
-      <!-- SETTINGS -->
-      <section class="panel card hidden" id="tab-settings">
-        <div class="panel-head">
-          <h2>Ajustes</h2>
-        </div>
-
-        <div class="card soft">
-          <h3>Formato</h3>
-          <p class="muted">CSV: fecha/importe/concepto. Conciliación: soporta pagos parciales y agrupados.</p>
+          <div id="authMsg" class="msg"></div>
         </div>
       </section>
 
-      <!-- MODALS -->
-      <div id="modal" class="modal hidden">
-        <div class="modal-card">
-          <div class="modal-head">
-            <div class="h" id="modalTitle">—</div>
+      <!-- APP VIEW -->
+      <section id="appView" class="hidden">
+
+        <!-- DASHBOARD -->
+        <section class="panel" id="tab-dashboard">
+          <div class="head">
+            <div>
+              <h2>Dashboard</h2>
+              <div class="muted">KPIs + gráficas por rango/tienda/filtros</div>
+            </div>
+            <div class="badges">
+              <span class="badge" id="badgePending">Pendientes: —</span>
+              <span class="badge" id="badgeOverdue">Vencidas: —</span>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi">
+              <div class="klabel">Saldo bancos (estimado)</div>
+              <div class="kvalue" id="kpiBank">0,00 €</div>
+              <div class="ksub muted">Apertura + movimientos</div>
+            </div>
+            <div class="kpi">
+              <div class="klabel">Cashflow (rango)</div>
+              <div class="kvalue" id="kpiFlow">0,00 €</div>
+              <div class="ksub muted">Ingresos − Gastos</div>
+            </div>
+            <div class="kpi">
+              <div class="klabel">Caja (último cierre)</div>
+              <div class="kvalue" id="kpiCash">0,00 €</div>
+              <div class="ksub muted">Efectivo + Tarjeta − Gastos</div>
+            </div>
+            <div class="kpi">
+              <div class="klabel">Conciliación</div>
+              <div class="kvalue" id="kpiReco">0</div>
+              <div class="ksub muted">Items sin conciliar</div>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <div class="cardhead">
+                <h3>Cashflow por día</h3>
+                <span class="muted">Banco + Caja</span>
+              </div>
+              <canvas id="chartFlow" height="120"></canvas>
+            </div>
+            <div class="card">
+              <div class="cardhead">
+                <h3>Gastos por categoría</h3>
+                <span class="muted">Top 8</span>
+              </div>
+              <canvas id="chartCats" height="120"></canvas>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <div class="cardhead">
+                <h3>Cuentas (saldo)</h3>
+                <span class="muted">Estimado</span>
+              </div>
+              <div id="dashAccounts" class="list"></div>
+            </div>
+            <div class="card">
+              <div class="cardhead">
+                <h3>Últimos cierres de caja</h3>
+                <span class="muted">Top 6</span>
+              </div>
+              <div id="dashCash" class="list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MOVIMIENTOS -->
+        <section class="panel hidden" id="tab-movs">
+          <div class="head">
+            <div>
+              <h2>Movimientos</h2>
+              <div class="muted">Banco + Caja · reglas · edición rápida · export</div>
+            </div>
+            <div class="row">
+              <span class="badge">Mostrados: <b id="movCount">0</b></span>
+              <button class="btn" id="btnApplyRules">Aplicar reglas</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <h3>Importar CSV (Banco)</h3>
+              <span class="muted">Auto-detecta ; o , · fechas DD/MM/YYYY</span>
+            </div>
+            <div class="row">
+              <input id="csvFile" type="file" accept=".csv,text/csv" class="input"/>
+              <button class="btn primary" id="btnImportCsv">Importar</button>
+              <button class="btn" id="btnExportMovs">Export CSV</button>
+            </div>
+            <div id="csvMsg" class="msg"></div>
+          </div>
+
+          <div class="list" id="movsList"></div>
+        </section>
+
+        <!-- FACTURAS -->
+        <section class="panel hidden" id="tab-invoices">
+          <div class="head">
+            <div>
+              <h2>Facturas</h2>
+              <div class="muted">Subir PDF (Storage) + estados + vencidas + conciliación</div>
+            </div>
+            <div class="row">
+              <button class="btn" id="btnExportInvs">Export CSV</button>
+            </div>
+          </div>
+
+          <div class="card" id="invoiceForm">
+            <div class="cardhead">
+              <h3>Nueva factura</h3>
+              <span class="muted">Sube PDF y guarda</span>
+            </div>
+
+            <div class="grid4">
+              <div>
+                <label>Proveedor/Cliente</label>
+                <input id="invParty" class="input" placeholder="ESMO / Cliente X"/>
+              </div>
+              <div>
+                <label>Nº Factura</label>
+                <input id="invNumber" class="input" placeholder="F-2026-001"/>
+              </div>
+              <div>
+                <label>Total</label>
+                <input id="invTotal" type="number" step="0.01" class="input" placeholder="0.00"/>
+              </div>
+              <div>
+                <label>Estado</label>
+                <select id="invStatus" class="select">
+                  <option value="pending">Pendiente</option>
+                  <option value="paid">Pagada</option>
+                  <option value="canceled">Anulada</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid4">
+              <div>
+                <label>Fecha</label>
+                <input id="invDate" type="date" class="input"/>
+              </div>
+              <div>
+                <label>Vencimiento</label>
+                <input id="invDue" type="date" class="input"/>
+              </div>
+              <div class="span2">
+                <label>PDF</label>
+                <input id="invPdf" type="file" accept="application/pdf" class="input"/>
+              </div>
+            </div>
+
+            <div class="row">
+              <button class="btn primary" id="btnAddInvoice">Guardar factura</button>
+              <button class="btn" id="btnClearInvoice">Limpiar</button>
+            </div>
+
+            <div id="invMsg" class="msg"></div>
+          </div>
+
+          <div class="list" id="invoicesList"></div>
+        </section>
+
+        <!-- CAJA -->
+        <section class="panel hidden" id="tab-cash">
+          <div class="head">
+            <div>
+              <h2>Caja diaria</h2>
+              <div class="muted">Cierre por tienda + notas</div>
+            </div>
+            <div class="row">
+              <button class="btn" id="btnExportCash">Export CSV</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <h3>Nuevo cierre</h3>
+              <span class="muted">Requiere seleccionar una tienda (no “Todas”)</span>
+            </div>
+
+            <div class="grid4">
+              <div>
+                <label>Fecha</label>
+                <input id="cashDate" type="date" class="input"/>
+              </div>
+              <div>
+                <label>Efectivo</label>
+                <input id="cashCash" type="number" step="0.01" class="input" placeholder="0.00"/>
+              </div>
+              <div>
+                <label>Tarjeta</label>
+                <input id="cashCard" type="number" step="0.01" class="input" placeholder="0.00"/>
+              </div>
+              <div>
+                <label>Gastos caja</label>
+                <input id="cashExp" type="number" step="0.01" class="input" placeholder="0.00"/>
+              </div>
+            </div>
+
+            <div class="grid2">
+              <div>
+                <label>Notas</label>
+                <input id="cashNotes" class="input" placeholder="Observaciones…"/>
+              </div>
+              <div class="row right">
+                <button class="btn primary" id="btnSaveCash">Guardar cierre</button>
+              </div>
+            </div>
+
+            <div id="cashMsg" class="msg"></div>
+          </div>
+
+          <div class="list" id="cashList"></div>
+        </section>
+
+        <!-- CONCILIACIÓN -->
+        <section class="panel hidden" id="tab-reco">
+          <div class="head">
+            <div>
+              <h2>Conciliación PRO</h2>
+              <div class="muted">Pagos parciales y agrupados + sugerencias inteligentes</div>
+            </div>
+            <div class="row">
+              <button class="btn" id="btnClearSel">Limpiar selección</button>
+              <button class="btn primary" id="btnCreateGroup">Crear grupo</button>
+              <span class="badge">Movs: <b id="selMovsCount">0</b></span>
+              <span class="badge">Facs: <b id="selInvsCount">0</b></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <h3>Sugerencias automáticas</h3>
+              <span class="muted">Match por importe y fecha</span>
+            </div>
+            <div class="grid4">
+              <div>
+                <label>Ventana días (+/-)</label>
+                <input id="hintDays" type="number" class="input" value="7"/>
+              </div>
+              <div>
+                <label>Tolerancia importe (€)</label>
+                <input id="hintTol" type="number" step="0.01" class="input" value="0.50"/>
+              </div>
+              <div class="span2 row right">
+                <button class="btn" id="btnHints">Generar sugerencias</button>
+              </div>
+            </div>
+            <div id="hintsBox" class="list"></div>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <div class="cardhead">
+                <h3>Movimientos (pendientes)</h3>
+                <span class="muted">Selecciona para conciliar</span>
+              </div>
+              <div id="recoMovs" class="list"></div>
+            </div>
+            <div class="card">
+              <div class="cardhead">
+                <h3>Facturas (pendientes)</h3>
+                <span class="muted">Selecciona para conciliar</span>
+              </div>
+              <div id="recoInvs" class="list"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <h3>Grupos creados</h3>
+              <span class="muted">Revertible (eliminar grupo)</span>
+            </div>
+            <div class="row">
+              <button class="btn" id="btnExportGroups">Export CSV</button>
+            </div>
+            <div id="groupsList" class="list"></div>
+            <div id="recoMsg" class="msg"></div>
+          </div>
+        </section>
+
+        <!-- CUENTAS -->
+        <section class="panel hidden" id="tab-accounts">
+          <div class="head">
+            <div>
+              <h2>Cuentas</h2>
+              <div class="muted">Saldo apertura + movimientos</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <h3>Nueva cuenta</h3>
+              <span class="muted">Solo contable/admin</span>
+            </div>
+            <div class="grid4">
+              <div class="span2">
+                <label>Nombre</label>
+                <input id="accName" class="input" placeholder="CaixaBank Principal"/>
+              </div>
+              <div>
+                <label>Moneda</label>
+                <input id="accCcy" class="input" value="EUR"/>
+              </div>
+              <div>
+                <label>Saldo inicial</label>
+                <input id="accOpening" type="number" step="0.01" class="input" placeholder="0.00"/>
+              </div>
+            </div>
+            <div class="row right">
+              <button class="btn primary" id="btnAddAccount">Añadir cuenta</button>
+            </div>
+          </div>
+
+          <div class="list" id="accountsList"></div>
+        </section>
+
+        <!-- TIENDAS -->
+        <section class="panel hidden" id="tab-stores">
+          <div class="head">
+            <div>
+              <h2>Tiendas</h2>
+              <div class="muted">Multitienda + filtros</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <h3>Nueva tienda</h3>
+              <span class="muted">Solo contable/admin</span>
+            </div>
+            <div class="grid3">
+              <div>
+                <label>Nombre</label>
+                <input id="storeName" class="input" placeholder="San Pablo"/>
+              </div>
+              <div>
+                <label>Alias</label>
+                <input id="storeAlias" class="input" placeholder="SP"/>
+              </div>
+              <div class="row right">
+                <button class="btn primary" id="btnAddStore">Añadir tienda</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="list" id="storesList"></div>
+        </section>
+
+        <!-- REGLAS -->
+        <section class="panel hidden" id="tab-rules">
+          <div class="head">
+            <div>
+              <h2>Reglas</h2>
+              <div class="muted">Auto-categorización por “contiene” + prioridad</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <h3>Nueva regla</h3>
+              <span class="muted">Solo contable/admin</span>
+            </div>
+
+            <div class="grid4">
+              <div class="span2">
+                <label>Si el texto contiene</label>
+                <input id="ruleNeedle" class="input" placeholder="MONTENEGRO"/>
+              </div>
+              <div>
+                <label>Tipo</label>
+                <select id="ruleType" class="select">
+                  <option value="any">Cualquiera</option>
+                  <option value="in">Solo ingresos</option>
+                  <option value="out">Solo gastos</option>
+                </select>
+              </div>
+              <div>
+                <label>Prioridad</label>
+                <input id="rulePrio" type="number" class="input" value="10"/>
+              </div>
+            </div>
+
+            <div class="grid4">
+              <div class="span2">
+                <label>Categoría</label>
+                <input id="ruleCat" class="input" placeholder="Compras · Proveedor"/>
+              </div>
+              <div>
+                <label>Contraparte</label>
+                <input id="ruleParty" class="input" placeholder="Montenegro (opcional)"/>
+              </div>
+              <div>
+                <label>Tienda</label>
+                <select id="ruleStore" class="select"></select>
+              </div>
+            </div>
+
+            <div class="row right">
+              <button class="btn primary" id="btnAddRule">Guardar regla</button>
+            </div>
+          </div>
+
+          <div class="list" id="rulesList"></div>
+        </section>
+
+        <!-- EXPORTS -->
+        <section class="panel hidden" id="tab-exports">
+          <div class="head">
+            <div>
+              <h2>Exportar</h2>
+              <div class="muted">CSV filtrado por tienda/rango/búsqueda</div>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <div class="cardhead">
+                <h3>Movimientos</h3>
+                <span class="muted">Lo que ves en “Movimientos”</span>
+              </div>
+              <button class="btn primary" id="btnExportMovs2">Exportar Movimientos CSV</button>
+            </div>
+
+            <div class="card">
+              <div class="cardhead">
+                <h3>Facturas</h3>
+                <span class="muted">Listado filtrado</span>
+              </div>
+              <button class="btn primary" id="btnExportInvs2">Exportar Facturas CSV</button>
+            </div>
+
+            <div class="card">
+              <div class="cardhead">
+                <h3>Caja</h3>
+                <span class="muted">Cierres filtrados</span>
+              </div>
+              <button class="btn primary" id="btnExportCash2">Exportar Caja CSV</button>
+            </div>
+
+            <div class="card">
+              <div class="cardhead">
+                <h3>Conciliación</h3>
+                <span class="muted">Grupos</span>
+              </div>
+              <button class="btn primary" id="btnExportGroups2">Exportar Grupos CSV</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- AUDIT -->
+        <section class="panel hidden" id="tab-audit">
+          <div class="head">
+            <div>
+              <h2>Auditoría</h2>
+              <div class="muted">Registro de acciones clave</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead">
+              <h3>Últimos eventos</h3>
+              <span class="muted">Top 200</span>
+            </div>
+            <div id="auditList" class="list"></div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="panel hidden" id="tab-settings">
+          <div class="head">
+            <div>
+              <h2>Ajustes</h2>
+              <div class="muted">Preferencias por usuario + helpers</div>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <div class="cardhead">
+                <h3>Preferencias</h3>
+                <span class="muted">Guardado en Firestore</span>
+              </div>
+              <div class="row">
+                <span class="badge">Tema: <b id="themeLabel">—</b></span>
+                <button class="btn" id="btnTheme2">Cambiar tema</button>
+              </div>
+              <div class="hr"></div>
+              <p class="muted">
+                Consejo: usa ORG para separar empresas. Usa “Miembros” para permisos.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="cardhead">
+                <h3>Formato CSV</h3>
+                <span class="muted">Detecta columnas fecha/importe/concepto</span>
+              </div>
+              <p class="muted">
+                Soporta: delimitador <b>,</b> o <b>;</b>, fechas <b>YYYY-MM-DD</b> o <b>DD/MM/YYYY</b>,
+                importes con coma o punto.
+              </p>
+            </div>
+          </div>
+        </section>
+
+      </section>
+
+      <!-- MODAL -->
+      <div class="modal hidden" id="modal">
+        <div class="modalcard">
+          <div class="modalhead">
+            <div class="mtitle" id="modalTitle">—</div>
             <button class="btn" id="btnCloseModal">Cerrar</button>
           </div>
           <div id="modalBody"></div>
         </div>
       </div>
 
-    </section>
-  </main>
+    </main>
+  </div>
 
-  <footer class="footer">
-    <span>CloudTrack PRO — B/W</span>
-    <span class="muted">Firebase Auth · Firestore · Storage</span>
-  </footer>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
+  <!-- App -->
   <script type="module" src="app.js"></script>
 </body>
 </html>
